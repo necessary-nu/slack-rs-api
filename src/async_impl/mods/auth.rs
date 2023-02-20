@@ -21,18 +21,15 @@ use crate::requests::SlackWebRequestSender;
 
 pub async fn revoke<R>(
     client: &R,
-    token: &str,
+
     request: &RevokeRequest,
 ) -> Result<RevokeResponse, RevokeError<R::Error>>
 where
     R: SlackWebRequestSender,
 {
-    let params = vec![
-        Some(("token", token)),
-        request
-            .test
-            .map(|test| ("test", if test { "1" } else { "0" })),
-    ];
+    let params = vec![request
+        .test
+        .map(|test| ("test", if test { "1" } else { "0" }))];
     let params = params.into_iter().flatten().collect::<Vec<_>>();
     let url = crate::get_slack_url_for_method("auth.revoke");
     client

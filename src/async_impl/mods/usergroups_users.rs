@@ -21,14 +21,13 @@ use crate::requests::SlackWebRequestSender;
 
 pub async fn list<R>(
     client: &R,
-    token: &str,
+
     request: &ListRequest<'_>,
 ) -> Result<ListResponse, ListError<R::Error>>
 where
     R: SlackWebRequestSender,
 {
     let params = vec![
-        Some(("token", token)),
         Some(("usergroup", request.usergroup)),
         request
             .include_disabled
@@ -53,14 +52,13 @@ where
 
 pub async fn update<R>(
     client: &R,
-    token: &str,
+
     request: &UpdateRequest<'_>,
 ) -> Result<UpdateResponse, UpdateError<R::Error>>
 where
     R: SlackWebRequestSender,
 {
     let params = vec![
-        Some(("token", token)),
         Some(("usergroup", request.usergroup)),
         Some(("users", request.users)),
         request

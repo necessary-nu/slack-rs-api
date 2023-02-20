@@ -19,17 +19,12 @@ use crate::sync::requests::SlackWebRequestSender;
 ///
 /// Wraps https://api.slack.com/methods/reminders.add
 
-pub fn add<R>(
-    client: &R,
-    token: &str,
-    request: &AddRequest<'_>,
-) -> Result<AddResponse, AddError<R::Error>>
+pub fn add<R>(client: &R, request: &AddRequest<'_>) -> Result<AddResponse, AddError<R::Error>>
 where
     R: SlackWebRequestSender,
 {
     let time = request.time.to_string();
     let params = vec![
-        Some(("token", token)),
         Some(("text", request.text)),
         Some(("time", &time[..])),
         request.user.map(|user| ("user", user)),
@@ -52,13 +47,13 @@ where
 
 pub fn complete<R>(
     client: &R,
-    token: &str,
+
     request: &CompleteRequest<'_>,
 ) -> Result<CompleteResponse, CompleteError<R::Error>>
 where
     R: SlackWebRequestSender,
 {
-    let params = vec![Some(("token", token)), Some(("reminder", request.reminder))];
+    let params = vec![Some(("reminder", request.reminder))];
     let params = params.into_iter().flatten().collect::<Vec<_>>();
     let url = crate::get_slack_url_for_method("reminders.complete");
     client
@@ -77,13 +72,13 @@ where
 
 pub fn delete<R>(
     client: &R,
-    token: &str,
+
     request: &DeleteRequest<'_>,
 ) -> Result<DeleteResponse, DeleteError<R::Error>>
 where
     R: SlackWebRequestSender,
 {
-    let params = vec![Some(("token", token)), Some(("reminder", request.reminder))];
+    let params = vec![Some(("reminder", request.reminder))];
     let params = params.into_iter().flatten().collect::<Vec<_>>();
     let url = crate::get_slack_url_for_method("reminders.delete");
     client
@@ -100,15 +95,11 @@ where
 ///
 /// Wraps https://api.slack.com/methods/reminders.info
 
-pub fn info<R>(
-    client: &R,
-    token: &str,
-    request: &InfoRequest<'_>,
-) -> Result<InfoResponse, InfoError<R::Error>>
+pub fn info<R>(client: &R, request: &InfoRequest<'_>) -> Result<InfoResponse, InfoError<R::Error>>
 where
     R: SlackWebRequestSender,
 {
-    let params = vec![Some(("token", token)), Some(("reminder", request.reminder))];
+    let params = vec![Some(("reminder", request.reminder))];
     let params = params.into_iter().flatten().collect::<Vec<_>>();
     let url = crate::get_slack_url_for_method("reminders.info");
     client

@@ -7,11 +7,10 @@ async fn main() -> Result<(), Box<dyn std::error::Error>> {
     // You can generate a legacy token to quickly test these apis
     // https://api.slack.com/custom-integrations/legacy-tokens
     let token = env::var("SLACK_API_TOKEN").map_err(|_| "SLACK_API_TOKEN env var must be set")?;
-    let client = slack::default_client().map_err(|_| "Could not get default_client")?;
+    let client = slack::default_client(&token).map_err(|_| "Could not get default_client")?;
 
     let response = slack::channels::history(
         &client,
-        &token,
         &slack::channels::HistoryRequest {
             channel: &env::args()
                 .nth(1)

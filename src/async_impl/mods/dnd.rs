@@ -21,11 +21,11 @@ use crate::requests::SlackWebRequestSender;
 ///
 /// Wraps https://api.slack.com/methods/dnd.endDnd
 
-pub async fn end_dnd<R>(client: &R, token: &str) -> Result<EndDndResponse, EndDndError<R::Error>>
+pub async fn end_dnd<R>(client: &R) -> Result<EndDndResponse, EndDndError<R::Error>>
 where
     R: SlackWebRequestSender,
 {
-    let params = &[("token", token)];
+    let params: &[(&str, &str)] = &[];
     let url = crate::get_slack_url_for_method("dnd.endDnd");
     client
         .send(&url, &params[..])
@@ -42,14 +42,11 @@ where
 ///
 /// Wraps https://api.slack.com/methods/dnd.endSnooze
 
-pub async fn end_snooze<R>(
-    client: &R,
-    token: &str,
-) -> Result<EndSnoozeResponse, EndSnoozeError<R::Error>>
+pub async fn end_snooze<R>(client: &R) -> Result<EndSnoozeResponse, EndSnoozeError<R::Error>>
 where
     R: SlackWebRequestSender,
 {
-    let params = &[("token", token)];
+    let params: &[(&str, &str)] = &[];
     let url = crate::get_slack_url_for_method("dnd.endSnooze");
     client
         .send(&url, &params[..])
@@ -68,16 +65,13 @@ where
 
 pub async fn info<R>(
     client: &R,
-    token: &str,
+
     request: &InfoRequest<'_>,
 ) -> Result<InfoResponse, InfoError<R::Error>>
 where
     R: SlackWebRequestSender,
 {
-    let params = vec![
-        Some(("token", token)),
-        request.user.map(|user| ("user", user)),
-    ];
+    let params = vec![request.user.map(|user| ("user", user))];
     let params = params.into_iter().flatten().collect::<Vec<_>>();
     let url = crate::get_slack_url_for_method("dnd.info");
     client
@@ -97,17 +91,14 @@ where
 
 pub async fn set_snooze<R>(
     client: &R,
-    token: &str,
+
     request: &SetSnoozeRequest,
 ) -> Result<SetSnoozeResponse, SetSnoozeError<R::Error>>
 where
     R: SlackWebRequestSender,
 {
     let num_minutes = request.num_minutes.to_string();
-    let params = vec![
-        Some(("token", token)),
-        Some(("num_minutes", &num_minutes[..])),
-    ];
+    let params = vec![Some(("num_minutes", &num_minutes[..]))];
     let params = params.into_iter().flatten().collect::<Vec<_>>();
     let url = crate::get_slack_url_for_method("dnd.setSnooze");
     client
@@ -127,16 +118,13 @@ where
 
 pub async fn team_info<R>(
     client: &R,
-    token: &str,
+
     request: &TeamInfoRequest<'_>,
 ) -> Result<TeamInfoResponse, TeamInfoError<R::Error>>
 where
     R: SlackWebRequestSender,
 {
-    let params = vec![
-        Some(("token", token)),
-        request.users.map(|users| ("users", users)),
-    ];
+    let params = vec![request.users.map(|users| ("users", users))];
     let params = params.into_iter().flatten().collect::<Vec<_>>();
     let url = crate::get_slack_url_for_method("dnd.teamInfo");
     client

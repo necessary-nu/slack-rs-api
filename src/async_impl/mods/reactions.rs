@@ -19,17 +19,12 @@ use crate::requests::SlackWebRequestSender;
 ///
 /// Wraps https://api.slack.com/methods/reactions.add
 
-pub async fn add<R>(
-    client: &R,
-    token: &str,
-    request: &AddRequest<'_>,
-) -> Result<AddResponse, AddError<R::Error>>
+pub async fn add<R>(client: &R, request: &AddRequest<'_>) -> Result<AddResponse, AddError<R::Error>>
 where
     R: SlackWebRequestSender,
 {
     let timestamp = request.timestamp.as_ref().map(|t| t.to_param_value());
     let params = vec![
-        Some(("token", token)),
         Some(("name", request.name)),
         request.file.map(|file| ("file", file)),
         request
@@ -57,17 +52,12 @@ where
 ///
 /// Wraps https://api.slack.com/methods/reactions.get
 
-pub async fn get<R>(
-    client: &R,
-    token: &str,
-    request: &GetRequest<'_>,
-) -> Result<GetResponse, GetError<R::Error>>
+pub async fn get<R>(client: &R, request: &GetRequest<'_>) -> Result<GetResponse, GetError<R::Error>>
 where
     R: SlackWebRequestSender,
 {
     let timestamp = request.timestamp.as_ref().map(|t| t.to_param_value());
     let params = vec![
-        Some(("token", token)),
         request.file.map(|file| ("file", file)),
         request
             .file_comment
@@ -99,7 +89,7 @@ where
 
 pub async fn list<R>(
     client: &R,
-    token: &str,
+
     request: &ListRequest<'_>,
 ) -> Result<ListResponse, ListError<R::Error>>
 where
@@ -108,7 +98,6 @@ where
     let count = request.count.map(|count| count.to_string());
     let page = request.page.map(|page| page.to_string());
     let params = vec![
-        Some(("token", token)),
         request.user.map(|user| ("user", user)),
         request
             .full
@@ -135,7 +124,7 @@ where
 
 pub async fn remove<R>(
     client: &R,
-    token: &str,
+
     request: &RemoveRequest<'_>,
 ) -> Result<RemoveResponse, RemoveError<R::Error>>
 where
@@ -143,7 +132,6 @@ where
 {
     let timestamp = request.timestamp.as_ref().map(|t| t.to_param_value());
     let params = vec![
-        Some(("token", token)),
         Some(("name", request.name)),
         request.file.map(|file| ("file", file)),
         request

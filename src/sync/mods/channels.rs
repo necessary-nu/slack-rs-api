@@ -23,13 +23,13 @@ use crate::sync::requests::SlackWebRequestSender;
 
 pub fn archive<R>(
     client: &R,
-    token: &str,
+
     request: &ArchiveRequest<'_>,
 ) -> Result<ArchiveResponse, ArchiveError<R::Error>>
 where
     R: SlackWebRequestSender,
 {
-    let params = vec![Some(("token", token)), Some(("channel", request.channel))];
+    let params = vec![Some(("channel", request.channel))];
     let params = params.into_iter().flatten().collect::<Vec<_>>();
     let url = crate::get_slack_url_for_method("channels.archive");
     client
@@ -48,14 +48,13 @@ where
 
 pub fn create<R>(
     client: &R,
-    token: &str,
+
     request: &CreateRequest<'_>,
 ) -> Result<CreateResponse, CreateError<R::Error>>
 where
     R: SlackWebRequestSender,
 {
     let params = vec![
-        Some(("token", token)),
         Some(("name", request.name)),
         request
             .validate
@@ -79,7 +78,7 @@ where
 
 pub fn history<R>(
     client: &R,
-    token: &str,
+
     request: &HistoryRequest<'_>,
 ) -> Result<HistoryResponse, HistoryError<R::Error>>
 where
@@ -89,7 +88,6 @@ where
     let oldest = request.oldest.as_ref().map(|t| t.to_param_value());
     let count = request.count.map(|count| count.to_string());
     let params = vec![
-        Some(("token", token)),
         Some(("channel", request.channel)),
         latest.as_ref().map(|latest| ("latest", &latest[..])),
         oldest.as_ref().map(|oldest| ("oldest", &oldest[..])),
@@ -117,15 +115,11 @@ where
 ///
 /// Wraps https://api.slack.com/methods/channels.info
 
-pub fn info<R>(
-    client: &R,
-    token: &str,
-    request: &InfoRequest<'_>,
-) -> Result<InfoResponse, InfoError<R::Error>>
+pub fn info<R>(client: &R, request: &InfoRequest<'_>) -> Result<InfoResponse, InfoError<R::Error>>
 where
     R: SlackWebRequestSender,
 {
-    let params = vec![Some(("token", token)), Some(("channel", request.channel))];
+    let params = vec![Some(("channel", request.channel))];
     let params = params.into_iter().flatten().collect::<Vec<_>>();
     let url = crate::get_slack_url_for_method("channels.info");
     client
@@ -144,14 +138,13 @@ where
 
 pub fn invite<R>(
     client: &R,
-    token: &str,
+
     request: &InviteRequest<'_>,
 ) -> Result<InviteResponse, InviteError<R::Error>>
 where
     R: SlackWebRequestSender,
 {
     let params = vec![
-        Some(("token", token)),
         Some(("channel", request.channel)),
         Some(("user", request.user)),
     ];
@@ -171,16 +164,11 @@ where
 ///
 /// Wraps https://api.slack.com/methods/channels.join
 
-pub fn join<R>(
-    client: &R,
-    token: &str,
-    request: &JoinRequest<'_>,
-) -> Result<JoinResponse, JoinError<R::Error>>
+pub fn join<R>(client: &R, request: &JoinRequest<'_>) -> Result<JoinResponse, JoinError<R::Error>>
 where
     R: SlackWebRequestSender,
 {
     let params = vec![
-        Some(("token", token)),
         Some(("name", request.name)),
         request
             .validate
@@ -202,16 +190,11 @@ where
 ///
 /// Wraps https://api.slack.com/methods/channels.kick
 
-pub fn kick<R>(
-    client: &R,
-    token: &str,
-    request: &KickRequest<'_>,
-) -> Result<KickResponse, KickError<R::Error>>
+pub fn kick<R>(client: &R, request: &KickRequest<'_>) -> Result<KickResponse, KickError<R::Error>>
 where
     R: SlackWebRequestSender,
 {
     let params = vec![
-        Some(("token", token)),
         Some(("channel", request.channel)),
         Some(("user", request.user)),
     ];
@@ -233,13 +216,13 @@ where
 
 pub fn leave<R>(
     client: &R,
-    token: &str,
+
     request: &LeaveRequest<'_>,
 ) -> Result<LeaveResponse, LeaveError<R::Error>>
 where
     R: SlackWebRequestSender,
 {
-    let params = vec![Some(("token", token)), Some(("channel", request.channel))];
+    let params = vec![Some(("channel", request.channel))];
     let params = params.into_iter().flatten().collect::<Vec<_>>();
     let url = crate::get_slack_url_for_method("channels.leave");
     client
@@ -256,16 +239,11 @@ where
 ///
 /// Wraps https://api.slack.com/methods/channels.list
 
-pub fn list<R>(
-    client: &R,
-    token: &str,
-    request: &ListRequest,
-) -> Result<ListResponse, ListError<R::Error>>
+pub fn list<R>(client: &R, request: &ListRequest) -> Result<ListResponse, ListError<R::Error>>
 where
     R: SlackWebRequestSender,
 {
     let params = vec![
-        Some(("token", token)),
         request
             .exclude_archived
             .map(|exclude_archived| ("exclude_archived", if exclude_archived { "1" } else { "0" })),
@@ -289,20 +267,12 @@ where
 ///
 /// Wraps https://api.slack.com/methods/channels.mark
 
-pub fn mark<R>(
-    client: &R,
-    token: &str,
-    request: &MarkRequest<'_>,
-) -> Result<MarkResponse, MarkError<R::Error>>
+pub fn mark<R>(client: &R, request: &MarkRequest<'_>) -> Result<MarkResponse, MarkError<R::Error>>
 where
     R: SlackWebRequestSender,
 {
     let ts = request.ts.to_param_value();
-    let params = vec![
-        Some(("token", token)),
-        Some(("channel", request.channel)),
-        Some(("ts", &ts[..])),
-    ];
+    let params = vec![Some(("channel", request.channel)), Some(("ts", &ts[..]))];
     let params = params.into_iter().flatten().collect::<Vec<_>>();
     let url = crate::get_slack_url_for_method("channels.mark");
     client
@@ -321,14 +291,13 @@ where
 
 pub fn rename<R>(
     client: &R,
-    token: &str,
+
     request: &RenameRequest<'_>,
 ) -> Result<RenameResponse, RenameError<R::Error>>
 where
     R: SlackWebRequestSender,
 {
     let params = vec![
-        Some(("token", token)),
         Some(("channel", request.channel)),
         Some(("name", request.name)),
         request
@@ -353,7 +322,7 @@ where
 
 pub fn replies<R>(
     client: &R,
-    token: &str,
+
     request: &RepliesRequest<'_>,
 ) -> Result<RepliesResponse, RepliesError<R::Error>>
 where
@@ -361,7 +330,6 @@ where
 {
     let thread_ts = request.thread_ts.to_param_value();
     let params = vec![
-        Some(("token", token)),
         Some(("channel", request.channel)),
         Some(("thread_ts", &thread_ts[..])),
     ];
@@ -383,14 +351,13 @@ where
 
 pub fn set_purpose<R>(
     client: &R,
-    token: &str,
+
     request: &SetPurposeRequest<'_>,
 ) -> Result<SetPurposeResponse, SetPurposeError<R::Error>>
 where
     R: SlackWebRequestSender,
 {
     let params = vec![
-        Some(("token", token)),
         Some(("channel", request.channel)),
         Some(("purpose", request.purpose)),
     ];
@@ -412,14 +379,13 @@ where
 
 pub fn set_topic<R>(
     client: &R,
-    token: &str,
+
     request: &SetTopicRequest<'_>,
 ) -> Result<SetTopicResponse, SetTopicError<R::Error>>
 where
     R: SlackWebRequestSender,
 {
     let params = vec![
-        Some(("token", token)),
         Some(("channel", request.channel)),
         Some(("topic", request.topic)),
     ];
@@ -441,13 +407,13 @@ where
 
 pub fn unarchive<R>(
     client: &R,
-    token: &str,
+
     request: &UnarchiveRequest<'_>,
 ) -> Result<UnarchiveResponse, UnarchiveError<R::Error>>
 where
     R: SlackWebRequestSender,
 {
-    let params = vec![Some(("token", token)), Some(("channel", request.channel))];
+    let params = vec![Some(("channel", request.channel))];
     let params = params.into_iter().flatten().collect::<Vec<_>>();
     let url = crate::get_slack_url_for_method("channels.unarchive");
     client

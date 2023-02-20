@@ -19,16 +19,11 @@ use crate::requests::SlackWebRequestSender;
 ///
 /// Wraps https://api.slack.com/methods/files.comments.add
 
-pub async fn add<R>(
-    client: &R,
-    token: &str,
-    request: &AddRequest<'_>,
-) -> Result<AddResponse, AddError<R::Error>>
+pub async fn add<R>(client: &R, request: &AddRequest<'_>) -> Result<AddResponse, AddError<R::Error>>
 where
     R: SlackWebRequestSender,
 {
     let params = vec![
-        Some(("token", token)),
         Some(("file", request.file)),
         Some(("comment", request.comment)),
     ];
@@ -51,17 +46,13 @@ where
 
 pub async fn delete<R>(
     client: &R,
-    token: &str,
+
     request: &DeleteRequest<'_>,
 ) -> Result<DeleteResponse, DeleteError<R::Error>>
 where
     R: SlackWebRequestSender,
 {
-    let params = vec![
-        Some(("token", token)),
-        Some(("file", request.file)),
-        Some(("id", request.id)),
-    ];
+    let params = vec![Some(("file", request.file)), Some(("id", request.id))];
     let params = params.into_iter().flatten().collect::<Vec<_>>();
     let url = crate::get_slack_url_for_method("files.comments.delete");
     client
@@ -81,14 +72,13 @@ where
 
 pub async fn edit<R>(
     client: &R,
-    token: &str,
+
     request: &EditRequest<'_>,
 ) -> Result<EditResponse, EditError<R::Error>>
 where
     R: SlackWebRequestSender,
 {
     let params = vec![
-        Some(("token", token)),
         Some(("file", request.file)),
         Some(("id", request.id)),
         Some(("comment", request.comment)),

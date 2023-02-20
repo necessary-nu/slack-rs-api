@@ -21,7 +21,7 @@ use crate::requests::SlackWebRequestSender;
 
 pub async fn access_logs<R>(
     client: &R,
-    token: &str,
+
     request: &AccessLogsRequest,
 ) -> Result<AccessLogsResponse, AccessLogsError<R::Error>>
 where
@@ -31,7 +31,6 @@ where
     let page = request.page.map(|page| page.to_string());
     let before = request.before.map(|before| before.to_string());
     let params = vec![
-        Some(("token", token)),
         count.as_ref().map(|count| ("count", &count[..])),
         page.as_ref().map(|page| ("page", &page[..])),
         before.as_ref().map(|before| ("before", &before[..])),
@@ -55,16 +54,13 @@ where
 
 pub async fn billable_info<R>(
     client: &R,
-    token: &str,
+
     request: &BillableInfoRequest<'_>,
 ) -> Result<BillableInfoResponse, BillableInfoError<R::Error>>
 where
     R: SlackWebRequestSender,
 {
-    let params = vec![
-        Some(("token", token)),
-        request.user.map(|user| ("user", user)),
-    ];
+    let params = vec![request.user.map(|user| ("user", user))];
     let params = params.into_iter().flatten().collect::<Vec<_>>();
     let url = crate::get_slack_url_for_method("team.billableInfo");
     client
@@ -105,7 +101,7 @@ where
 
 pub async fn integration_logs<R>(
     client: &R,
-    token: &str,
+
     request: &IntegrationLogsRequest<'_>,
 ) -> Result<IntegrationLogsResponse, IntegrationLogsError<R::Error>>
 where
@@ -114,7 +110,6 @@ where
     let count = request.count.map(|count| count.to_string());
     let page = request.page.map(|page| page.to_string());
     let params = vec![
-        Some(("token", token)),
         request
             .service_id
             .map(|service_id| ("service_id", service_id)),

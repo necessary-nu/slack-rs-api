@@ -23,7 +23,7 @@ use crate::requests::SlackWebRequestSender;
 
 pub async fn delete<R>(
     client: &R,
-    token: &str,
+
     request: &DeleteRequest<'_>,
 ) -> Result<DeleteResponse, DeleteError<R::Error>>
 where
@@ -31,7 +31,6 @@ where
 {
     let ts = request.ts.to_param_value();
     let params = vec![
-        Some(("token", token)),
         Some(("ts", &ts[..])),
         Some(("channel", request.channel)),
         request
@@ -57,14 +56,13 @@ where
 
 pub async fn me_message<R>(
     client: &R,
-    token: &str,
+
     request: &MeMessageRequest<'_>,
 ) -> Result<MeMessageResponse, MeMessageError<R::Error>>
 where
     R: SlackWebRequestSender,
 {
     let params = vec![
-        Some(("token", token)),
         Some(("channel", request.channel)),
         Some(("text", request.text)),
     ];
@@ -87,7 +85,7 @@ where
 
 pub async fn post_message<R>(
     client: &R,
-    token: &str,
+
     request: &PostMessageRequest<'_>,
 ) -> Result<PostMessageResponse, PostMessageError<R::Error>>
 where
@@ -95,7 +93,6 @@ where
 {
     let thread_ts = request.thread_ts.as_ref().map(|t| t.to_param_value());
     let params = vec![
-        Some(("token", token)),
         Some(("channel", request.channel)),
         Some(("text", request.text)),
         request.parse.map(|parse| ("parse", parse)),
@@ -145,14 +142,13 @@ where
 
 pub async fn unfurl<R>(
     client: &R,
-    token: &str,
+
     request: &UnfurlRequest<'_>,
 ) -> Result<UnfurlResponse, UnfurlError<R::Error>>
 where
     R: SlackWebRequestSender,
 {
     let params = vec![
-        Some(("token", token)),
         Some(("channel", request.channel)),
         Some(("ts", request.ts)),
         Some(("unfurls", request.unfurls)),
@@ -182,7 +178,7 @@ where
 
 pub async fn update<R>(
     client: &R,
-    token: &str,
+
     request: &UpdateRequest<'_>,
 ) -> Result<UpdateResponse, UpdateError<R::Error>>
 where
@@ -190,7 +186,6 @@ where
 {
     let ts = request.ts.to_param_value();
     let params = vec![
-        Some(("token", token)),
         Some(("ts", &ts[..])),
         Some(("channel", request.channel)),
         Some(("text", request.text)),

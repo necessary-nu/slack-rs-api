@@ -23,14 +23,13 @@ use crate::requests::SlackWebRequestSender;
 
 pub async fn create<R>(
     client: &R,
-    token: &str,
+
     request: &CreateRequest<'_>,
 ) -> Result<CreateResponse, CreateError<R::Error>>
 where
     R: SlackWebRequestSender,
 {
     let params = vec![
-        Some(("token", token)),
         Some(("name", request.name)),
         request.handle.map(|handle| ("handle", handle)),
         request
@@ -60,14 +59,13 @@ where
 
 pub async fn disable<R>(
     client: &R,
-    token: &str,
+
     request: &DisableRequest<'_>,
 ) -> Result<DisableResponse, DisableError<R::Error>>
 where
     R: SlackWebRequestSender,
 {
     let params = vec![
-        Some(("token", token)),
         Some(("usergroup", request.usergroup)),
         request
             .include_count
@@ -92,14 +90,13 @@ where
 
 pub async fn enable<R>(
     client: &R,
-    token: &str,
+
     request: &EnableRequest<'_>,
 ) -> Result<EnableResponse, EnableError<R::Error>>
 where
     R: SlackWebRequestSender,
 {
     let params = vec![
-        Some(("token", token)),
         Some(("usergroup", request.usergroup)),
         request
             .include_count
@@ -122,16 +119,11 @@ where
 ///
 /// Wraps https://api.slack.com/methods/usergroups.list
 
-pub async fn list<R>(
-    client: &R,
-    token: &str,
-    request: &ListRequest,
-) -> Result<ListResponse, ListError<R::Error>>
+pub async fn list<R>(client: &R, request: &ListRequest) -> Result<ListResponse, ListError<R::Error>>
 where
     R: SlackWebRequestSender,
 {
     let params = vec![
-        Some(("token", token)),
         request
             .include_disabled
             .map(|include_disabled| ("include_disabled", if include_disabled { "1" } else { "0" })),
@@ -161,14 +153,13 @@ where
 
 pub async fn update<R>(
     client: &R,
-    token: &str,
+
     request: &UpdateRequest<'_>,
 ) -> Result<UpdateResponse, UpdateError<R::Error>>
 where
     R: SlackWebRequestSender,
 {
     let params = vec![
-        Some(("token", token)),
         Some(("usergroup", request.usergroup)),
         request.name.map(|name| ("name", name)),
         request.handle.map(|handle| ("handle", handle)),

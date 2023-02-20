@@ -19,16 +19,11 @@ use crate::sync::requests::SlackWebRequestSender;
 ///
 /// Wraps https://api.slack.com/methods/users.profile.get
 
-pub fn get<R>(
-    client: &R,
-    token: &str,
-    request: &GetRequest<'_>,
-) -> Result<GetResponse, GetError<R::Error>>
+pub fn get<R>(client: &R, request: &GetRequest<'_>) -> Result<GetResponse, GetError<R::Error>>
 where
     R: SlackWebRequestSender,
 {
     let params = vec![
-        Some(("token", token)),
         request.user.map(|user| ("user", user)),
         request
             .include_labels
@@ -50,16 +45,11 @@ where
 ///
 /// Wraps https://api.slack.com/methods/users.profile.set
 
-pub fn set<R>(
-    client: &R,
-    token: &str,
-    request: &SetRequest<'_>,
-) -> Result<SetResponse, SetError<R::Error>>
+pub fn set<R>(client: &R, request: &SetRequest<'_>) -> Result<SetResponse, SetError<R::Error>>
 where
     R: SlackWebRequestSender,
 {
     let params = vec![
-        Some(("token", token)),
         request.user.map(|user| ("user", user)),
         request.profile.map(|profile| ("profile", profile)),
         request.name.map(|name| ("name", name)),

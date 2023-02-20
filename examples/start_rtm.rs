@@ -9,11 +9,11 @@ async fn main() -> Result<(), Box<dyn std::error::Error>> {
     // https://api.slack.com/custom-integrations/legacy-tokens
     let token = env::var("SLACK_API_TOKEN").map_err(|_| "SLACK_API_TOKEN env var must be set")?;
     let client =
-        slack::default_client().map_err(|e| format!("Could not get default_client, {:?}", e))?;
+        slack::default_client(&token).map_err(|e| format!("Could not get default_client, {:?}", e))?;
 
     {
         let request = slack::rtm::StartRequest::default();
-        let response = slack::rtm::start(&client, &token, &request).await;
+        let response = slack::rtm::start(&client, &request).await;
 
         if let Ok(response) = response {
             if let Some(channels) = response.channels {

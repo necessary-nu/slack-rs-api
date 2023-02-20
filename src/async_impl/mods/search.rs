@@ -21,18 +21,13 @@ use crate::requests::SlackWebRequestSender;
 ///
 /// Wraps https://api.slack.com/methods/search.all
 
-pub async fn all<R>(
-    client: &R,
-    token: &str,
-    request: &AllRequest<'_>,
-) -> Result<AllResponse, AllError<R::Error>>
+pub async fn all<R>(client: &R, request: &AllRequest<'_>) -> Result<AllResponse, AllError<R::Error>>
 where
     R: SlackWebRequestSender,
 {
     let count = request.count.map(|count| count.to_string());
     let page = request.page.map(|page| page.to_string());
     let params = vec![
-        Some(("token", token)),
         Some(("query", request.query)),
         request.sort.map(|sort| ("sort", sort)),
         request.sort_dir.map(|sort_dir| ("sort_dir", sort_dir)),
@@ -61,7 +56,7 @@ where
 
 pub async fn files<R>(
     client: &R,
-    token: &str,
+
     request: &FilesRequest<'_>,
 ) -> Result<FilesResponse, FilesError<R::Error>>
 where
@@ -70,7 +65,6 @@ where
     let count = request.count.map(|count| count.to_string());
     let page = request.page.map(|page| page.to_string());
     let params = vec![
-        Some(("token", token)),
         Some(("query", request.query)),
         request.sort.map(|sort| ("sort", sort)),
         request.sort_dir.map(|sort_dir| ("sort_dir", sort_dir)),
@@ -99,7 +93,7 @@ where
 
 pub async fn messages<R>(
     client: &R,
-    token: &str,
+
     request: &MessagesRequest<'_>,
 ) -> Result<MessagesResponse, MessagesError<R::Error>>
 where
@@ -108,7 +102,6 @@ where
     let count = request.count.map(|count| count.to_string());
     let page = request.page.map(|page| page.to_string());
     let params = vec![
-        Some(("token", token)),
         Some(("query", request.query)),
         request.sort.map(|sort| ("sort", sort)),
         request.sort_dir.map(|sort_dir| ("sort_dir", sort_dir)),

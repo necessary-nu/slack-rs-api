@@ -21,13 +21,13 @@ use crate::requests::SlackWebRequestSender;
 
 pub async fn info<R>(
     client: &R,
-    token: &str,
+
     request: &InfoRequest<'_>,
 ) -> Result<InfoResponse, InfoError<R::Error>>
 where
     R: SlackWebRequestSender,
 {
-    let params = vec![Some(("token", token)), request.bot.map(|bot| ("bot", bot))];
+    let params = vec![request.bot.map(|bot| ("bot", bot))];
     let params = params.into_iter().flatten().collect::<Vec<_>>();
     let url = crate::get_slack_url_for_method("bots.info");
     client

@@ -24,8 +24,9 @@ pub trait SlackWebRequestSender {
 
 #[cfg(feature = "reqwest")]
 mod reqwest_support {
-    pub use reqwest::Error;
     use async_trait::async_trait;
+    pub use reqwest::Error;
+    use reqwest::{header::HeaderMap, ClientBuilder};
     use std::borrow::Borrow;
 
     use super::SlackWebRequestSender;
@@ -62,8 +63,13 @@ mod reqwest_support {
     /// let params = Default::default();
     /// let response = slack_api::channels::list(&client, &token, &params);
     /// ```
-    pub fn default_client() -> Result<Client, reqwest::Error> {
-        Ok(Client::new())
+    pub fn default_client(token: &str) -> Result<Client, reqwest::Error> {
+        let mut headers = HeaderMap::new();
+        headers.insert("Authorization", format!("Bearer {token}").parse().unwrap());
+        Ok(ClientBuilder::new()
+            .default_headers(headers)
+            .build()
+            .unwrap())
     }
 }
 

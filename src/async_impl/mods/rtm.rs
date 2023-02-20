@@ -42,14 +42,13 @@ where
 
 pub async fn start<R>(
     client: &R,
-    token: &str,
+
     request: &StartRequest,
 ) -> Result<StartResponse, StartError<R::Error>>
 where
     R: SlackWebRequestSender,
 {
     let params = vec![
-        Some(("token", token)),
         request
             .no_unreads
             .map(|no_unreads| ("no_unreads", if no_unreads { "1" } else { "0" })),

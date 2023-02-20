@@ -23,13 +23,13 @@ use crate::sync::requests::SlackWebRequestSender;
 
 pub fn delete<R>(
     client: &R,
-    token: &str,
+
     request: &DeleteRequest<'_>,
 ) -> Result<DeleteResponse, DeleteError<R::Error>>
 where
     R: SlackWebRequestSender,
 {
-    let params = vec![Some(("token", token)), Some(("file", request.file))];
+    let params = vec![Some(("file", request.file))];
     let params = params.into_iter().flatten().collect::<Vec<_>>();
     let url = crate::get_slack_url_for_method("files.delete");
     client
@@ -46,18 +46,13 @@ where
 ///
 /// Wraps https://api.slack.com/methods/files.info
 
-pub fn info<R>(
-    client: &R,
-    token: &str,
-    request: &InfoRequest<'_>,
-) -> Result<InfoResponse, InfoError<R::Error>>
+pub fn info<R>(client: &R, request: &InfoRequest<'_>) -> Result<InfoResponse, InfoError<R::Error>>
 where
     R: SlackWebRequestSender,
 {
     let count = request.count.map(|count| count.to_string());
     let page = request.page.map(|page| page.to_string());
     let params = vec![
-        Some(("token", token)),
         Some(("file", request.file)),
         count.as_ref().map(|count| ("count", &count[..])),
         page.as_ref().map(|page| ("page", &page[..])),
@@ -78,11 +73,7 @@ where
 ///
 /// Wraps https://api.slack.com/methods/files.list
 
-pub fn list<R>(
-    client: &R,
-    token: &str,
-    request: &ListRequest<'_>,
-) -> Result<ListResponse, ListError<R::Error>>
+pub fn list<R>(client: &R, request: &ListRequest<'_>) -> Result<ListResponse, ListError<R::Error>>
 where
     R: SlackWebRequestSender,
 {
@@ -91,7 +82,6 @@ where
     let count = request.count.map(|count| count.to_string());
     let page = request.page.map(|page| page.to_string());
     let params = vec![
-        Some(("token", token)),
         request.user.map(|user| ("user", user)),
         request.channel.map(|channel| ("channel", channel)),
         ts_from.as_ref().map(|ts_from| ("ts_from", &ts_from[..])),
@@ -118,13 +108,13 @@ where
 
 pub fn revoke_public_url<R>(
     client: &R,
-    token: &str,
+
     request: &RevokePublicURLRequest<'_>,
 ) -> Result<RevokePublicURLResponse, RevokePublicURLError<R::Error>>
 where
     R: SlackWebRequestSender,
 {
-    let params = vec![Some(("token", token)), Some(("file", request.file))];
+    let params = vec![Some(("file", request.file))];
     let params = params.into_iter().flatten().collect::<Vec<_>>();
     let url = crate::get_slack_url_for_method("files.revokePublicURL");
     client
@@ -143,13 +133,13 @@ where
 
 pub fn shared_public_url<R>(
     client: &R,
-    token: &str,
+
     request: &SharedPublicURLRequest<'_>,
 ) -> Result<SharedPublicURLResponse, SharedPublicURLError<R::Error>>
 where
     R: SlackWebRequestSender,
 {
-    let params = vec![Some(("token", token)), Some(("file", request.file))];
+    let params = vec![Some(("file", request.file))];
     let params = params.into_iter().flatten().collect::<Vec<_>>();
     let url = crate::get_slack_url_for_method("files.sharedPublicURL");
     client

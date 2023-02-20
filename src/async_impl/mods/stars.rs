@@ -19,17 +19,12 @@ use crate::requests::SlackWebRequestSender;
 ///
 /// Wraps https://api.slack.com/methods/stars.add
 
-pub async fn add<R>(
-    client: &R,
-    token: &str,
-    request: &AddRequest<'_>,
-) -> Result<AddResponse, AddError<R::Error>>
+pub async fn add<R>(client: &R, request: &AddRequest<'_>) -> Result<AddResponse, AddError<R::Error>>
 where
     R: SlackWebRequestSender,
 {
     let timestamp = request.timestamp.as_ref().map(|t| t.to_param_value());
     let params = vec![
-        Some(("token", token)),
         request.file.map(|file| ("file", file)),
         request
             .file_comment
@@ -56,18 +51,13 @@ where
 ///
 /// Wraps https://api.slack.com/methods/stars.list
 
-pub async fn list<R>(
-    client: &R,
-    token: &str,
-    request: &ListRequest,
-) -> Result<ListResponse, ListError<R::Error>>
+pub async fn list<R>(client: &R, request: &ListRequest) -> Result<ListResponse, ListError<R::Error>>
 where
     R: SlackWebRequestSender,
 {
     let count = request.count.map(|count| count.to_string());
     let page = request.page.map(|page| page.to_string());
     let params = vec![
-        Some(("token", token)),
         count.as_ref().map(|count| ("count", &count[..])),
         page.as_ref().map(|page| ("page", &page[..])),
     ];
@@ -90,7 +80,7 @@ where
 
 pub async fn remove<R>(
     client: &R,
-    token: &str,
+
     request: &RemoveRequest<'_>,
 ) -> Result<RemoveResponse, RemoveError<R::Error>>
 where
@@ -98,7 +88,6 @@ where
 {
     let timestamp = request.timestamp.as_ref().map(|t| t.to_param_value());
     let params = vec![
-        Some(("token", token)),
         request.file.map(|file| ("file", file)),
         request
             .file_comment

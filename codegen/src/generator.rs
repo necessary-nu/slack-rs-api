@@ -239,7 +239,7 @@ impl Method {
             let lifetime = if self.has_lifetime() { "<'_>" } else { "" };
             let method_params = if has_token {
                 format!(
-                    "client: &R, token: &str, request: &{}{}",
+                    "client: &R,  request: &{}{}",
                     request_struct_name, lifetime
                 )
             } else {

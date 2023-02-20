@@ -21,10 +21,7 @@ use crate::sync::requests::SlackWebRequestSender;
 ///
 /// Wraps https://api.slack.com/methods/users.deletePhoto
 
-pub fn delete_photo<R>(
-    client: &R,
-    token: &str,
-) -> Result<DeletePhotoResponse, DeletePhotoError<R::Error>>
+pub fn delete_photo<R>(client: &R) -> Result<DeletePhotoResponse, DeletePhotoError<R::Error>>
 where
     R: SlackWebRequestSender,
 {
@@ -46,13 +43,13 @@ where
 
 pub fn get_presence<R>(
     client: &R,
-    token: &str,
+
     request: &GetPresenceRequest<'_>,
 ) -> Result<GetPresenceResponse, GetPresenceError<R::Error>>
 where
     R: SlackWebRequestSender,
 {
-    let params = vec![Some(("token", token)), Some(("user", request.user))];
+    let params = vec![Some(("user", request.user))];
     let params = params.into_iter().flatten().collect::<Vec<_>>();
     let url = crate::get_slack_url_for_method("users.getPresence");
     client
@@ -89,15 +86,11 @@ where
 ///
 /// Wraps https://api.slack.com/methods/users.info
 
-pub fn info<R>(
-    client: &R,
-    token: &str,
-    request: &InfoRequest<'_>,
-) -> Result<InfoResponse, InfoError<R::Error>>
+pub fn info<R>(client: &R, request: &InfoRequest<'_>) -> Result<InfoResponse, InfoError<R::Error>>
 where
     R: SlackWebRequestSender,
 {
-    let params = vec![Some(("token", token)), Some(("user", request.user))];
+    let params = vec![Some(("user", request.user))];
     let params = params.into_iter().flatten().collect::<Vec<_>>();
     let url = crate::get_slack_url_for_method("users.info");
     client
@@ -114,20 +107,13 @@ where
 ///
 /// Wraps https://api.slack.com/methods/users.list
 
-pub fn list<R>(
-    client: &R,
-    token: &str,
-    request: &ListRequest,
-) -> Result<ListResponse, ListError<R::Error>>
+pub fn list<R>(client: &R, request: &ListRequest) -> Result<ListResponse, ListError<R::Error>>
 where
     R: SlackWebRequestSender,
 {
-    let params = vec![
-        Some(("token", token)),
-        request
-            .presence
-            .map(|presence| ("presence", if presence { "1" } else { "0" })),
-    ];
+    let params = vec![request
+        .presence
+        .map(|presence| ("presence", if presence { "1" } else { "0" }))];
     let params = params.into_iter().flatten().collect::<Vec<_>>();
     let url = crate::get_slack_url_for_method("users.list");
     client
@@ -166,13 +152,13 @@ where
 
 pub fn set_presence<R>(
     client: &R,
-    token: &str,
+
     request: &SetPresenceRequest<'_>,
 ) -> Result<SetPresenceResponse, SetPresenceError<R::Error>>
 where
     R: SlackWebRequestSender,
 {
-    let params = vec![Some(("token", token)), Some(("presence", request.presence))];
+    let params = vec![Some(("presence", request.presence))];
     let params = params.into_iter().flatten().collect::<Vec<_>>();
     let url = crate::get_slack_url_for_method("users.setPresence");
     client

@@ -19,17 +19,12 @@ use crate::sync::requests::SlackWebRequestSender;
 ///
 /// Wraps https://api.slack.com/methods/pins.add
 
-pub fn add<R>(
-    client: &R,
-    token: &str,
-    request: &AddRequest<'_>,
-) -> Result<AddResponse, AddError<R::Error>>
+pub fn add<R>(client: &R, request: &AddRequest<'_>) -> Result<AddResponse, AddError<R::Error>>
 where
     R: SlackWebRequestSender,
 {
     let timestamp = request.timestamp.as_ref().map(|t| t.to_param_value());
     let params = vec![
-        Some(("token", token)),
         Some(("channel", request.channel)),
         request.file.map(|file| ("file", file)),
         request
@@ -55,15 +50,11 @@ where
 ///
 /// Wraps https://api.slack.com/methods/pins.list
 
-pub fn list<R>(
-    client: &R,
-    token: &str,
-    request: &ListRequest<'_>,
-) -> Result<ListResponse, ListError<R::Error>>
+pub fn list<R>(client: &R, request: &ListRequest<'_>) -> Result<ListResponse, ListError<R::Error>>
 where
     R: SlackWebRequestSender,
 {
-    let params = vec![Some(("token", token)), Some(("channel", request.channel))];
+    let params = vec![Some(("channel", request.channel))];
     let params = params.into_iter().flatten().collect::<Vec<_>>();
     let url = crate::get_slack_url_for_method("pins.list");
     client
@@ -82,7 +73,7 @@ where
 
 pub fn remove<R>(
     client: &R,
-    token: &str,
+
     request: &RemoveRequest<'_>,
 ) -> Result<RemoveResponse, RemoveError<R::Error>>
 where
@@ -90,7 +81,6 @@ where
 {
     let timestamp = request.timestamp.as_ref().map(|t| t.to_param_value());
     let params = vec![
-        Some(("token", token)),
         Some(("channel", request.channel)),
         request.file.map(|file| ("file", file)),
         request

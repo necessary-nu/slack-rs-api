@@ -21,14 +21,11 @@ use crate::requests::SlackWebRequestSender;
 ///
 /// Wraps https://api.slack.com/methods/users.deletePhoto
 
-pub async fn delete_photo<R>(
-    client: &R,
-    token: &str,
-) -> Result<DeletePhotoResponse, DeletePhotoError<R::Error>>
+pub async fn delete_photo<R>(client: &R) -> Result<DeletePhotoResponse, DeletePhotoError<R::Error>>
 where
     R: SlackWebRequestSender,
 {
-    let params = &[("token", token)];
+    let params: &[(&str, &str)] = &[];
     let url = crate::get_slack_url_for_method("users.deletePhoto");
     client
         .send(&url, &params[..])
@@ -47,13 +44,13 @@ where
 
 pub async fn get_presence<R>(
     client: &R,
-    token: &str,
+
     request: &GetPresenceRequest<'_>,
 ) -> Result<GetPresenceResponse, GetPresenceError<R::Error>>
 where
     R: SlackWebRequestSender,
 {
-    let params = vec![Some(("token", token)), Some(("user", request.user))];
+    let params = vec![Some(("user", request.user))];
     let params = params.into_iter().flatten().collect::<Vec<_>>();
     let url = crate::get_slack_url_for_method("users.getPresence");
     client
@@ -71,14 +68,11 @@ where
 ///
 /// Wraps https://api.slack.com/methods/users.identity
 
-pub async fn identity<R>(
-    client: &R,
-    token: &str,
-) -> Result<IdentityResponse, IdentityError<R::Error>>
+pub async fn identity<R>(client: &R) -> Result<IdentityResponse, IdentityError<R::Error>>
 where
     R: SlackWebRequestSender,
 {
-    let params = &[("token", token)];
+    let params: &[(&str, &str)] = &[];
     let url = crate::get_slack_url_for_method("users.identity");
     client
         .send(&url, &params[..])
@@ -97,13 +91,13 @@ where
 
 pub async fn info<R>(
     client: &R,
-    token: &str,
+
     request: &InfoRequest<'_>,
 ) -> Result<InfoResponse, InfoError<R::Error>>
 where
     R: SlackWebRequestSender,
 {
-    let params = vec![Some(("token", token)), Some(("user", request.user))];
+    let params = vec![Some(("user", request.user))];
     let params = params.into_iter().flatten().collect::<Vec<_>>();
     let url = crate::get_slack_url_for_method("users.info");
     client
@@ -121,20 +115,13 @@ where
 ///
 /// Wraps https://api.slack.com/methods/users.list
 
-pub async fn list<R>(
-    client: &R,
-    token: &str,
-    request: &ListRequest,
-) -> Result<ListResponse, ListError<R::Error>>
+pub async fn list<R>(client: &R, request: &ListRequest) -> Result<ListResponse, ListError<R::Error>>
 where
     R: SlackWebRequestSender,
 {
-    let params = vec![
-        Some(("token", token)),
-        request
-            .presence
-            .map(|presence| ("presence", if presence { "1" } else { "0" })),
-    ];
+    let params = vec![request
+        .presence
+        .map(|presence| ("presence", if presence { "1" } else { "0" }))];
     let params = params.into_iter().flatten().collect::<Vec<_>>();
     let url = crate::get_slack_url_for_method("users.list");
     client
@@ -152,14 +139,11 @@ where
 ///
 /// Wraps https://api.slack.com/methods/users.setActive
 
-pub async fn set_active<R>(
-    client: &R,
-    token: &str,
-) -> Result<SetActiveResponse, SetActiveError<R::Error>>
+pub async fn set_active<R>(client: &R) -> Result<SetActiveResponse, SetActiveError<R::Error>>
 where
     R: SlackWebRequestSender,
 {
-    let params = &[("token", token)];
+    let params: &[(&str, &str)] = &[];
     let url = crate::get_slack_url_for_method("users.setActive");
     client
         .send(&url, &params[..])
@@ -178,13 +162,13 @@ where
 
 pub async fn set_presence<R>(
     client: &R,
-    token: &str,
+
     request: &SetPresenceRequest<'_>,
 ) -> Result<SetPresenceResponse, SetPresenceError<R::Error>>
 where
     R: SlackWebRequestSender,
 {
-    let params = vec![Some(("token", token)), Some(("presence", request.presence))];
+    let params = vec![Some(("presence", request.presence))];
     let params = params.into_iter().flatten().collect::<Vec<_>>();
     let url = crate::get_slack_url_for_method("users.setPresence");
     client

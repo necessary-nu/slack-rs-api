@@ -19,20 +19,13 @@ use crate::requests::SlackWebRequestSender;
 ///
 /// Wraps https://api.slack.com/methods/team.profile.get
 
-pub async fn get<R>(
-    client: &R,
-    token: &str,
-    request: &GetRequest<'_>,
-) -> Result<GetResponse, GetError<R::Error>>
+pub async fn get<R>(client: &R, request: &GetRequest<'_>) -> Result<GetResponse, GetError<R::Error>>
 where
     R: SlackWebRequestSender,
 {
-    let params = vec![
-        Some(("token", token)),
-        request
-            .visibility
-            .map(|visibility| ("visibility", visibility)),
-    ];
+    let params = vec![request
+        .visibility
+        .map(|visibility| ("visibility", visibility))];
     let params = params.into_iter().flatten().collect::<Vec<_>>();
     let url = crate::get_slack_url_for_method("team.profile.get");
     client

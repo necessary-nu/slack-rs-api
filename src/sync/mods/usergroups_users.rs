@@ -19,16 +19,11 @@ use crate::sync::requests::SlackWebRequestSender;
 ///
 /// Wraps https://api.slack.com/methods/usergroups.users.list
 
-pub fn list<R>(
-    client: &R,
-    token: &str,
-    request: &ListRequest<'_>,
-) -> Result<ListResponse, ListError<R::Error>>
+pub fn list<R>(client: &R, request: &ListRequest<'_>) -> Result<ListResponse, ListError<R::Error>>
 where
     R: SlackWebRequestSender,
 {
     let params = vec![
-        Some(("token", token)),
         Some(("usergroup", request.usergroup)),
         request
             .include_disabled
@@ -52,14 +47,13 @@ where
 
 pub fn update<R>(
     client: &R,
-    token: &str,
+
     request: &UpdateRequest<'_>,
 ) -> Result<UpdateResponse, UpdateError<R::Error>>
 where
     R: SlackWebRequestSender,
 {
     let params = vec![
-        Some(("token", token)),
         Some(("usergroup", request.usergroup)),
         Some(("users", request.users)),
         request
