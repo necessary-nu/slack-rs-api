@@ -24,9 +24,8 @@ pub trait SlackWebRequestSender {
 
 #[cfg(feature = "reqwest")]
 mod reqwest_support {
-    pub use self::reqwest::Error;
+    pub use reqwest::Error;
     use async_trait::async_trait;
-    use reqwest_ as reqwest;
     use std::borrow::Borrow;
 
     use super::SlackWebRequestSender;

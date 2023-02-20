@@ -6,39 +6,33 @@ license = "Apache-2.0"
 name = "slack_api"
 repository = "https://github.com/slack-rs/slack-rs-api.git"
 version = "0.23.1"
-edition = "2018"
+edition = "2021"
 readme = "README.md"
 
 [dependencies]
-serde = "1.0"
-serde_derive = "1.0"
-serde_json = "1.0"
-
-[dependencies.reqwest_]
-package = "reqwest"
-version = "0.11"
-optional = true
-default-features = false
-features = ["gzip"]
+serde = "1.0.152"
+serde_derive = "1.0.152"
+serde_json = "1.0.93"
+reqwest = { version = "0.11.14", optional = true, default-features = false, features = ["gzip"] }
 
 [dependencies.async-trait]
 package = "async-trait"
-version = "0.1"
+version = "0.1.64"
 optional = true
 
 [dev-dependencies.tokio]
 package = "tokio"
-version = "1.2"
-features = ["macros"]
+version = "1.25.0"
+features = ["macros", "rt-multi-thread"]
 
 [features]
 default = ["reqwest", "with_native_tls"]
 async = ["async-trait"]
 sync = []
-reqwest = ["reqwest_", "async"]
-reqwest_blocking = ["reqwest_/blocking", "sync"]
-with_rustls = ["reqwest_/rustls-tls"]
-with_native_tls = ["reqwest_/native-tls"]
+reqwest = ["dep:reqwest", "async"]
+reqwest_blocking = ["reqwest/blocking", "sync"]
+with_rustls = ["reqwest/rustls-tls"]
+with_native_tls = ["reqwest/native-tls"]
 
 [package.metadata.docs.rs]
 all-features = true
