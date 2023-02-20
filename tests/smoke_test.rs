@@ -4,19 +4,18 @@ use slack_api as slack;
 
 use std::env;
 
-fn get_setup(
-) -> Result<(String, impl slack::requests::SlackWebRequestSender), Box<dyn std::error::Error>> {
+fn get_setup() -> Result<impl slack::requests::SlackWebRequestSender, Box<dyn std::error::Error>> {
     // You can generate a legacy token to quickly test these apis
     // https://api.slack.com/custom-integrations/legacy-tokens
     let token = env::var("SLACK_API_TOKEN").map_err(|_| "SLACK_API_TOKEN env var must be set")?;
-    let client = slack::default_client().map_err(|_| "Could not get default_client")?;
-    Ok((token, client))
+    let client = slack::default_client(&token).map_err(|_| "Could not get default_client")?;
+    Ok(client)
 }
 
 #[tokio::test]
 #[ignore]
 async fn smoke_test() -> Result<(), Box<dyn std::error::Error>> {
-    let (_, client) = get_setup()?;
+    let client = get_setup()?;
 
     let resp = slack::api::test(
         &client,
@@ -36,11 +35,10 @@ async fn smoke_test() -> Result<(), Box<dyn std::error::Error>> {
 #[tokio::test]
 #[ignore]
 async fn smoke_channels() -> Result<(), Box<dyn std::error::Error>> {
-    let (token, client) = get_setup()?;
+    let client = get_setup()?;
 
     let all_channels = slack::channels::list(
         &client,
-        &token,
         &slack::channels::ListRequest {
             ..slack::channels::ListRequest::default()
         },
@@ -56,7 +54,6 @@ async fn smoke_channels() -> Result<(), Box<dyn std::error::Error>> {
 
         let channel_info = slack::channels::info(
             &client,
-            &token,
             &slack::channels::InfoRequest {
                 channel: channel_id,
                 ..Default::default()
@@ -70,7 +67,6 @@ async fn smoke_channels() -> Result<(), Box<dyn std::error::Error>> {
 
         let _channel_history = slack::channels::history(
             &client,
-            &token,
             &slack::channels::HistoryRequest {
                 channel: channel_id,
                 oldest: Some(1234567890.1234.into()),
